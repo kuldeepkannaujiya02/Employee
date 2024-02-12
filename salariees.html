@@ -1,0 +1,199 @@
+\<!DOCTYPE html>
+<html>
+<head>
+  <title>Employee Filter</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.4.1/dist/css/bootstrap.min.css" integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css" integrity="sha512-Rr0wqzVsQ5vSjGBzrEGbUGT/XBbFBrL8iIzOLJQuvb2l7QQ53yjPt+F+7J6eVpRUWTJCOwAUnmZpOul0Kl+ixg==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+
+  <link rel="stylesheet" href="salariees.css">
+  <style>
+    /* CSS for fade-in animation */
+    @keyframes fadeInRow {
+      from {
+        opacity: 0;
+      }
+      to {
+        opacity: 1;
+      }
+    }
+
+    /* Apply fade-in animation to table rows */
+    .fade-in-row {
+      animation: fadeInRow 0.5s ease-out;
+    }
+
+    /* CSS for slide-in animation */
+    @keyframes slideIn {
+      0% {
+        opacity: 0;
+        transform: translateY(-50px);
+      }
+      100% {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    /* Apply slide-in animation to filtered employees */
+    .slide-in {
+      animation: slideIn 0.5s ease-out;
+    }
+
+    /* Apply colors */
+    body {
+      background-color: #f2f2f2; /* Light gray background */
+    }
+
+    .container {
+      max-width: 500px;
+      padding: 20px;
+      border: 1px solid #ccc;
+      border-radius: 4px;
+      margin: auto;
+      background-color: #fff; /* White background */
+      box-shadow: 0 0 10px rgba(0, 0, 0, 0.1); /* Shadow effect */
+    }
+
+    h1 {
+      text-align: center;
+      margin-bottom: 20px;
+      color: #333; /* Dark gray text */
+    }
+
+    .filter-bar {
+      display: flex;
+      justify-content: space-between;
+      align-items: center; /* Align items vertically */
+      margin-bottom: 20px;
+    }
+
+    .add-employee {
+      margin-top: 20px;
+      background-color: #f9f9f9; /* Light gray background */
+      padding: 20px;
+      border-radius: 4px;
+    }
+/* 
+    button {
+      padding: 8px 16px;
+      background-color: #007bff; /* Blue button */
+      /* color: #fff; White text */
+      /* border: none; */
+      /* border-radius: 4px; */
+      /* cursor: pointer; */
+      /* transition: background-color 0.2s ease-in-out  */
+
+    button:hover {
+      background-color: #0056b3; /* Darker blue on hover */
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>Employee Filter <i class="fas fa-users"></i></h1>
+    <div class="filter-bar fade-in">
+      <input type="text" id="departmentInput" placeholder="Enter department name" style="padding: 8px; border: 1px solid #ccc; border-radius: 4px; flex: 1;">
+      <button onclick="filterEmployees()">Filter</button>
+    </div>
+    <div id="filteredEmployees" class="fade-in" style="display: none;"></div>
+    <div class="add-employee fade-in">
+      <h2>Add Employee <i class="fas fa-user-plus"></i></h2>
+      <input type="text" id="newEmployeename" placeholder="Name" style="padding: 8px; border: 1px solid #ccc; border-radius: 4px; margin-bottom: 10px;">
+      <input type="text" id="newEmployeeaddress" placeholder="Address" style="padding: 8px; border: 1px solid #ccc; border-radius: 4px; margin-bottom: 10px;">
+      <input type="text" id="newEmployeenumber" placeholder="Employee Number" style="padding: 8px; border: 1px solid #ccc; border-radius: 4px; margin-bottom: 10px;">
+      <input type="text" id="newEmployeesalary" placeholder="Salary" style="padding: 8px; border: 1px solid #ccc; border-radius: 4px; margin-bottom: 10px;">
+      <input type="text" id="newDepartment" placeholder="Department" style="padding: 8px; border: 1px solid #ccc; border-radius: 4px; margin-bottom: 10px;">
+      <button onclick="addEmployee()">Add</button>
+    </div>
+    <!-- <table id="employeeTable" -->
+    <table id="employeeTable" class="fade-in">
+      <thead> 
+        <tr>
+          <th>Name</th>
+          <th>Address</th>
+          <th>Employee Number</th>
+          <th>Salary</th>
+          <th>Department</th>
+        </tr>
+      </thead>
+      <tbody>
+      </tbody>
+  </table>
+</div>
+<script src="salariees.js"></script>
+<script>
+  function updateEmployeeTable() {
+    const employeeTable = document.getElementById("employeeTable");
+    const tbody = employeeTable.querySelector("tbody");
+
+    tbody.innerHTML = "";
+
+    Employeedetails.forEach(employee => {
+      const newRow = document.createElement("tr");
+      newRow.innerHTML = `
+        <td>${employee.Employeename}</td>
+        <td>${employee.Employeeaddress}</td>
+        <td>${employee.Employeenumber}</td>
+        <td>${employee.Employeesalary}</td>
+        <td>${employee.department}</td>
+      `;
+      tbody.appendChild(newRow);
+      // Add fade-in animation class to the newly added row
+      newRow.classList.add("fade-in-row");
+    });
+  }
+
+  function addEmployee() {
+    const newEmployeename = document.getElementById("newEmployeename").value;
+    const newEmployeeaddress = document.getElementById("newEmployeeaddress").value;
+    const newEmployeenumber = parseInt(document.getElementById("newEmployeenumber").value);
+    const newEmployeesalary = parseInt(document.getElementById("newEmployeesalary").value);
+    const newDepartment = document.getElementById("newDepartment").value;
+
+    // Add new employee object to Employeedetails array
+    Employeedetails.push({
+      Employeename: newEmployeename,
+      Employeeaddress: newEmployeeaddress,
+      Employeenumber: newEmployeenumber,
+      Employeesalary: newEmployeesalary,
+      department: newDepartment
+    });
+
+    // Update the table
+    updateEmployeeTable();
+
+    // Reset input fields
+    document.getElementById("newEmployeename").value = "";
+    document.getElementById("newEmployeeaddress").value = "";
+    document.getElementById("newEmployeenumber").value = "";
+    document.getElementById("newEmployeesalary").value = "";
+    document.getElementById("newDepartment").value = "";
+  }
+
+  function filterEmployees() {
+    const departmentInput = document.getElementById("departmentInput");
+    const filteredEmployees = document.getElementById("filteredEmployees");
+    const department = departmentInput.value.toLowerCase();
+
+    const filteredList = Employeedetails.filter(employee => employee.department.toLowerCase() === department);
+
+    if (filteredList.length > 0) {
+      filteredEmployees.innerHTML = "<h2>Employees in " + department.toUpperCase() + " department:</h2>";
+      filteredList.forEach(employee => {
+        filteredEmployees.innerHTML += `<p>${employee.Employeename} - ${employee.department}</p>`;
+      });
+      // Remove "display: none;" to show the small box
+      filteredEmployees.style.display = "block";
+      // Add slide-in animation class
+      filteredEmployees.classList.add("slide-in");
+    } else {
+      filteredEmployees.innerHTML = "No employees found in that department.";
+    }
+  }
+
+</script>
+
+</body>
+</html>
+
